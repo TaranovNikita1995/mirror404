@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MIRROR404 — Архив Зеркала</title>
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="theme-color" content="#000000" />
+</head>
+<body>
+
+  <div id="preloader" class="preloader">
+    <h1 class="glitch" data-text="MIRROR404">MIRROR404</h1>
+  </div>
+
+  <dialog id="age-gate" class="age-gate" aria-labelledby="gateTitle">
+    <div class="gate-frame">
+      <div class="scanlines"></div>
+      <h1 id="gateTitle" class="gate-title">ДОПУСК К АРХИВУ</h1>
+      <p class="gate-sub">CLASSIFIED • MIRROR404</p>
+      <div class="gate-card">
+        <p class="gate-text">
+          Материалы могут содержать резкие звуки, вспышки, пугающие образы и
+          художественные симуляции. Вход разрешён только совершеннолетним.
+        </p>
+        <label class="gate-check">
+          <input id="chk18" type="checkbox" />
+          <span>Мне исполнилось 18 лет</span>
+        </label>
+        <button id="enterGate" class="btn btn-danger" disabled>Получить доступ</button>
+        <button id="declineGate" class="btn btn-ghost" aria-label="Покинуть архив">Покинуть</button>
+        <p class="gate-note">
+          Нажимая «Получить доступ», вы подтверждаете ознакомление и согласны
+          с легендой проекта. Доступ можно отозвать в любое время.
+        </p>
+      </div>
+      <div class="gate-seal">[ CONFIDENTIAL ]</div>
+    </div>
+  </dialog>
+
+  <div id="veil" class="veil" aria-hidden="true"></div>
+
+  <header class="hero">
+    <h1 id="hero-glitch" class="glitch" data-text="MIRROR404">MIRROR404</h1>
+    <p class="subtitle reveal">Архив Зеркала — смотри на свой страх</p>
+    <nav class="nav reveal">
+      <a href="#archive" data-nav class="navlink">Архив</a>
+      <a href="#sect" data-nav class="navlink">Секта</a>
+      <a href="#rites" data-nav class="navlink">Ритуалы</a>
+    </nav>
+    <a href="#archive" class="enter-btn" data-nav>Войти</a>
+  </header>
+
+  <main id="content" class="main-content">
+    <section id="archive" class="section">
+      <h2 class="reveal">Архив</h2>
+      <p class="reveal">
+        Ты заглянул в пустоту. Здесь нет истины — здесь только отражение. Всё, что ты видишь,
+        — тень твоего разума, записанная в холодный экран.
+      </p>
+    </section>
+    <section id="sect" class="section">
+      <h2 class="reveal">Секта</h2>
+      <p class="reveal">
+        Мы называем его Зеркальным Образом. Он не говорит — он возвращает то, что уже звучало
+        внутри. Запомни символ и будь тих.
+      </p>
+      <div class="sigil reveal" aria-hidden="true"></div>
+    </section>
+    <section id="rites" class="section">
+      <h2 class="reveal">Заповеди</h2>
+      <ul class="rules reveal">
+        <li>Не верь глазам — они принадлежат другим.</li>
+        <li>Молчи, когда слышишь зов.</li>
+        <li>Спи не дольше трёх часов — иначе они найдут тебя.</li>
+        <li>Прикасайся к свету только <b>правой</b> рукой.</li>
+        <li>Храни нить, ибо она свяжет твой страх.</li>
+        <li>Не называй своё имя после полуночи.</li>
+        <li>Не доверяй зеркалам.</li>
+        <li>Жертва нужна не для богов, а для людей.</li>
+        <li>Всё повторяется.</li>
+        <li>Шёпот — истина.</li>
+        <li class="disclaimer">
+          Всё, что ты прочёл, есть лишь отражение твоего страха. Архив — тень искусства, а не реальность.
+          Никто не пострадал. Никого не было.
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>© mirror404.site — Архив Зеркала</p>
+  </footer>
+
+  <audio id="audio-ambient" src="audio/ambient.mp3" loop></audio>
+  <audio id="audio-hover" src="audio/hover.mp3"></audio>
+  <audio id="audio-click" src="audio/click.mp3"></audio>
+
+  <script src="app.js"></script>
+</body>
+</html>
