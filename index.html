@@ -45,7 +45,7 @@
 
     <div class="site-wrapper">
         <div class="frame-glow" aria-hidden="true"></div>
-        <div class="background-fire" aria-hidden="true"></div>
+        <div class="frame-deco-bones" aria-hidden="true"></div>
 
         <header class="hero" id="home">
             <div class="brand" data-parallax-container>
@@ -70,54 +70,46 @@
                 </div>
             </nav>
 
-            <div class="marquee"><p>SYSTEM ALERT: MEMORY CORRUPTION DETECTED... ARCHIVE INTEGRITY AT 73%... DO NOT PROCEED... SYSTEM ALERT...</p></div>
+            <div class="marquee"><p>SYSTEM ALERT: MEMORY CORRUPTION DETECTED... ARCHIVE INTEGRITY AT 73%... DO NOT PROCEED...</p></div>
 
             <section id="legend" class="section">
+                <div class="deco-skull" aria-hidden="true"></div>
                 <h2 class="anim-title">Легенда Архива</h2>
-                <p class="anim-text distort-on-hover">Куратор — <b>Архивариус НУЛЬ</b>. Лицо без имени, голос без тембра. Он не хранит прошлое — он копирует отражения того, что не произошло, но отбрасывает тень. Любая страница здесь — это зеркало, которое врёт честнее дневника.</p>
+                <p class="anim-text distort-on-hover">Куратор — <b>Архивариус НУЛЬ</b>. Лицо без имени, голос без тембра. Он не хранит прошлое — он копирует отражения того, что не произошло, но отбрасывает тень.</p>
             </section>
-
+            
             <section id="archive" class="section">
                 <h2 class="anim-title">Архив</h2>
                 <div id="watchCam" class="watch-cam anim-fade">
                     <video id="watchVideo" class="watch-video" playsinline muted loop></video>
-                    <div class="watch-overlay">
-                        <span class="watch-label">CAM-04</span>
-                        <button id="watchNext" class="btn btn-ghost btn-small">Сменить канал</button>
-                    </div>
+                    <div class="watch-overlay"><span class="watch-label">CAM-04</span><button id="watchNext" class="btn btn-ghost btn-small">Сменить канал</button></div>
                 </div>
                 <div id="docsGrid" class="docs-grid anim-fade">
-                    <a href="docs/manifest.txt" download class="doc-link">
-                        <div class="doc-icon">TXT</div><div class="doc-title">manifest.txt</div><div class="doc-desc">Протокол <span class="text-redacted">самоуничтожения</span></div>
-                    </a>
-                    <a href="docs/whisper.pdf" download class="doc-link">
-                        <div class="doc-icon">PDF</div><div class="doc-title">whisper.pdf</div><div class="doc-desc">Расшифровка статического шёпота</div>
-                    </a>
-                    <a href="docs/signal.bin" download class="doc-link">
-                        <div class="doc-icon">BIN</div><div class="doc-title">signal.bin</div><div class="doc-desc">Неизвестный бинарный <span class="text-redacted">сигнал</span></div>
-                    </a>
+                    <a href="docs/manifest.txt" download class="doc-link"><div class="doc-icon">TXT</div><div class="doc-title">manifest.txt</div><div class="doc-desc"><span class="text-redacted">Протокол</span></div></a>
+                    <a href="docs/whisper.pdf" download class="doc-link"><div class="doc-icon">PDF</div><div class="doc-title">whisper.pdf</div><div class="doc-desc">Расшифровка шёпота</div></a>
+                    <a href="docs/signal.bin" download class="doc-link"><div class="doc-icon">BIN</div><div class="doc-title">signal.bin</div><div class="doc-desc"><span class="text-redacted">Сигнал</span></div></a>
                 </div>
             </section>
             
             <section id="sect" class="section">
                 <h2 class="anim-title">Секта «MIRROR404»</h2>
-                <p class="anim-text">Внутренний круг называет себя «пикселятами». Их обряд — молчаливое листание страниц в три часа ночи. Их знак — <em>зеркальная четвёрка</em>. Их клятва — «я вернусь за собой».</p>
+                <p class="anim-text">Внутренний круг называет себя «пикселятами». Их обряд — молчаливое листание страниц в три часа ночи. Их знак — <em>зеркальная четвёрка</em>.</p>
                 <div class="sigil anim-fade" aria-hidden="true"></div>
             </section>
             
             <section id="diary" class="section">
-                <h2 class="anim-title">Дневник Архивариуса НУЛЬ</h2>
+                <h2 class="anim-title">Дневник Архивариуса</h2>
                 <div id="diaryList" class="diary-list"></div>
             </section>
             
             <section id="test" class="section">
                 <h2 class="anim-title">Тест на склонность</h2>
                 <form id="testForm" class="anim-fade test-form" autocomplete="off">
-                    <p>Порог допуска — <b>80/100</b>. Ответы нигде не сохраняются.</p>
-                    <label><input type="checkbox" value="20"> Иногда мне кажется, что экран «смотрит» в ответ.</label>
-                    <label><input type="checkbox" value="20"> Я люблю тишину, в которой слышны шумы.</label>
-                    <label><input type="checkbox" value="20"> У зеркал есть память о том, кто на них не смотрел.</label>
-                    <label><input type="checkbox" value="20"> Симметрия вызывает у меня лёгкое беспокойство.</label>
+                    <p>Порог допуска — <b>80/100</b>.</p>
+                    <label><input type="checkbox" value="20"> Экран «смотрит» в ответ.</label>
+                    <label><input type="checkbox" value="20"> Тишина, в которой слышны шумы.</label>
+                    <label><input type="checkbox" value="20"> У зеркал есть память.</label>
+                    <label><input type="checkbox" value="20"> Симметрия вызывает беспокойство.</label>
                     <label><input type="checkbox" value="20"> Я принимаю «Обет Зеркала».</label>
                     <div class="test-actions">
                         <button type="button" id="testSubmit" class="btn btn-danger magnetic">Проверить</button>
@@ -130,14 +122,14 @@
             </section>
 
             <section id="laws" class="section">
+                 <div class="deco-barb-wire" aria-hidden="true"></div>
                 <h2 class="anim-title">Заповеди Архива</h2>
                 <ol class="rules">
-                    <li class="anim-stagger">Не верь глазам — они принадлежат другим.</li>
+                    <li class="anim-stagger">Не верь глазам.</li>
                     <li class="anim-stagger">Молчи, когда слышишь зов.</li>
-                    <li class="anim-stagger">Спи не дольше трёх часов — иначе они найдут тебя.</li>
                     <li class="anim-stagger">Всё повторяется.</li>
                     <li class="anim-stagger">Шёпот — истина.</li>
-                    <li class="disclaimer anim-stagger">Всё, что ты прочёл, — отражение твоего страха. Архив — тень искусства, а не реальность.</li>
+                    <li class="disclaimer anim-stagger">Всё, что ты прочёл, — отражение.</li>
                 </ol>
             </section>
             
@@ -152,19 +144,9 @@
                 </form>
             </section>
             
-            <section id="room-1313" class="section room-secret" aria-hidden="true">
-                <h2 class="anim-title">Комната 13:13</h2>
-                <p>Ты здесь. Стены покрыты симметричными трещинами. В центре — зеркало. Оно показывает не тебя, а код на обратной стороне твоих век. Код: <b>4D 49 52 52 4F 52</b></p>
-            </section>
-            <section id="room-sell" class="section room-secret" aria-hidden="true">
-                <h2 class="anim-title">Комната Сделки</h2>
-                <p>Контракт подписан отражением. Фоновая музыка теперь звучит чуть громче. Она всегда будет с тобой.</p>
-                <audio loop controls muted class="secret-audio" src="audio/secret_loop.mp3" title="Секретный трек"></audio>
-            </section>
-            <section id="room-zero" class="section room-secret" aria-hidden="true">
-                <h2 class="anim-title">Сообщение от НУЛЯ</h2>
-                <p>Я не создавал этот Архив. Я просто первым его нашёл. Или он нашёл меня. Неважно. Главное — не пытайся найти выход. Его нет. Есть только новые входы.</p>
-            </section>
+            <section id="room-1313" class="section room-secret" aria-hidden="true"></section>
+            <section id="room-sell" class="section room-secret" aria-hidden="true"></section>
+            <section id="room-zero" class="section room-secret" aria-hidden="true"></section>
         </main>
 
         <footer class="footer">
@@ -178,7 +160,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    
     <script src="app.js"></script>
 </body>
 </html>
+
