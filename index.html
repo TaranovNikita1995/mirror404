@@ -1,223 +1,185 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MIRROR404 — Архив Зеркала</title>
-  <meta name="theme-color" content="#000000"/>
-  <!-- Готический шрифт для логотипа -->
-  <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css"/>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MIRROR404 — Архив Зеркала</title>
+    <meta name="theme-color" content="#000000" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css" />
 </head>
-<body class="crt">
-  <!-- Кастомный курсор -->
-  <div class="cursor"><div class="cursor-inner"></div></div>
+<body>
+    <div class="vhs-overlay" aria-hidden="true"></div>
+    <div class="vhs-glitch-overlay" aria-hidden="true"></div>
 
-  <!-- Прелоадер -->
-  <div id="preloader" class="preloader" aria-hidden="true">
-    <h1 class="glitch" data-text="MIRROR404">MIRROR404</h1>
-  </div>
+    <div class="cursor"><div class="cursor-inner"></div></div>
 
-  <!-- Возрастной допуск -->
-  <dialog id="age-gate" class="age-gate" aria-labelledby="gateTitle">
-    <div class="gate-frame">
-      <div class="scanlines"></div>
-      <h1 id="gateTitle" class="gate-title">ДОПУСК К АРХИВУ</h1>
-      <p class="gate-sub">CLASSIFIED • MIRROR404</p>
-      <div class="gate-card">
-        <p class="gate-text">
-          Материалы могут содержать вспышки, резкие эффекты, пугающие образы и художественные симуляции.
-          Вход разрешён только совершеннолетним.
-        </p>
-        <label class="gate-check">
-          <input id="chk18" type="checkbox"/>
-          <span>Мне исполнилось 18 лет</span>
-        </label>
-        <div class="gate-actions">
-          <button id="enterGate" class="btn btn-danger" disabled>Получить доступ</button>
-          <button id="declineGate" class="btn btn-ghost" aria-label="Покинуть архив">Покинуть</button>
-          <button id="sellSoul" class="btn btn-weird" title="Не рекомендуется">Продать душу</button>
-        </div>
-        <p class="gate-note">
-          Нажимая «Получить доступ», вы подтверждаете ознакомление с легендой проекта. Доступ можно отозвать в любое время.
-        </p>
-      </div>
-      <div class="gate-seal">[ CONFIDENTIAL ]</div>
+    <div id="preloader" class="preloader">
+        <h1 class="glitch" data-text="MIRROR404">MIRROR404</h1>
     </div>
-  </dialog>
 
-  <!-- Интро-видео (поверх всего) -->
-  <div id="introWrap" class="intro-wrap" hidden>
-    <video id="introVideo" class="intro-video" playsinline autoplay muted>
-      <source src="media/intro.mp4" type="video/mp4"/>
-    </video>
-    <div class="intro-overlay">
-      <div class="vhs-noise"></div>
-      <button id="introSkip" class="btn btn-ghost intro-skip">Пропустить ▸</button>
+    <div id="intro" class="intro" hidden>
+        <video id="introVideo" class="intro-video" playsinline muted preload="auto" src="media/intro.mp4"></video>
+        <button id="introSkip" class="intro-skip" type="button" aria-label="Пропустить">Пропустить ▸</button>
     </div>
-  </div>
 
-  <!-- Затемняющая вуаль для переходов -->
-  <div id="veil" class="veil" aria-hidden="true"></div>
-
-  <!-- Контентная рамка -->
-  <div class="wireframe">
-
-    <!-- Hero -->
-    <header class="hero" id="home" role="banner">
-      <div class="brand" data-parallax-container>
-        <h1 id="logo" class="logo logo-swap glitch" aria-label="MIRROR404" data-parallax-item>
-          <span class="t t-normal" data-text="MIRROR404">MIRROR404</span>
-          <span class="t t-alt" data-text="MIRROЯ404">MIRROЯ40<span class="mirror-4">4</span></span>
-        </h1>
-        <span class="tagline" data-parallax-item data-parallax-speed="0.5">Архив Зеркала — смотри на свой страх</span>
-      </div>
-
-      <nav class="nav" aria-label="Главное меню">
-        <button class="burger" id="burger" aria-expanded="false" aria-label="Открыть меню" aria-controls="navLinks">☰</button>
-        <div id="navLinks" class="nav-links">
-          <a href="#legend" class="navlink">Легенда</a>
-          <a href="#archive" class="navlink">Архив</a>
-          <a href="#sect"    class="navlink">Секта</a>
-          <a href="#rites"   class="navlink">Ритуалы</a>
-          <a href="#consp"   class="navlink">Заговор</a>
-          <a href="#ufo"     class="navlink">НЛО</a>
-          <a href="#masons"  class="navlink">Масоны</a>
-          <a href="#occult"  class="navlink">Потустороннее</a>
-          <a href="#cases"   class="navlink">Случаи</a>
-          <a href="#diary"   class="navlink">Дневник</a>
-          <a href="#test"    class="navlink">Тест</a>
-          <a href="#laws"    class="navlink">Заповеди</a>
+    <dialog id="age-gate" class="age-gate" aria-labelledby="gateTitle">
+        <div class="gate-frame">
+            <h1 id="gateTitle" class="gate-title">ДОПУСК К АРХИВУ</h1>
+            <p class="gate-sub">CLASSIFIED • MIRROR404</p>
+            <div class="gate-card">
+                <p class="gate-text">Материалы содержат вспышки, резкие звуки и пугающие образы. Вход разрешён только совершеннолетним.</p>
+                <label class="gate-check"><input id="chk18" type="checkbox" /><span>Мне исполнилось 18 лет</span></label>
+                <div class="gate-actions">
+                    <button id="enterGate" class="btn btn-danger" disabled>Получить доступ</button>
+                    <button id="declineGate" class="btn btn-ghost" aria-label="Покинуть">Покинуть</button>
+                    <button id="sellSoul" class="btn btn-weird" title="Нажимать не рекомендуется">Продать душу</button>
+                </div>
+            </div>
         </div>
-      </nav>
-      <a href="#legend" class="enter-btn">Войти</a>
-    </header>
+    </dialog>
 
-    <!-- Main -->
-    <main id="content" class="main-content">
-      <section id="legend" class="section">
-        <h2 class="anim-title">Легенда</h2>
-        <p class="anim-text">
-          Говорят, где-то между пикселями живёт отражение, у которого нет лица. Его зовут Архивариус НУЛЬ.
-          Оно не говорит — оно возвращает то, что уже звучало внутри. Каждая запись — это не воспоминание,
-          а отпечаток страха, оставленный на поверхности экрана. MIRROR404 — не сайт. Это зеркало, настроенное
-          не на тебя, а на то, что готово выйти из тени.
-        </p>
-        <p class="anim-text">
-          Пройдя через «допуск», ты подписываешь не контракт — <i>легенду</i>. В ней сказано: 
-          «Смотри долго — и увидишь себя. Смотри слишком долго — и увидишь его». Архив не читает тебя — он
-          проверяет, сколько «шума» в твоём сигнале. Чем его больше — тем легче дверь.
-        </p>
-      </section>
+    <div id="veil" class="veil" aria-hidden="true"></div>
 
-      <section id="archive" class="section">
-        <h2 class="anim-title">Архив</h2>
-        <p class="anim-text">Собрание фрагментов, вырванных из эфира: заметки, нарративы, «исправленные» кадры.
-          Это не доказательства. Это — следы. Здесь ничего не подтверждается и ничего не опровергается.</p>
-      </section>
+    <div class="site-wrapper">
+        <div class="frame-glow" aria-hidden="true"></div>
+        <div class="background-fire" aria-hidden="true"></div>
 
-      <section id="sect" class="section">
-        <h2 class="anim-title">Секта</h2>
-        <p class="anim-text">Хранители Зеркала не ищут истину — они лечат любопытство ложью. 
-          Архивариус НУЛЬ ведёт хронику тех, кто однажды перестал доверять собственным глазам.</p>
-        <div class="sigil anim-fade" aria-hidden="true"></div>
-      </section>
+        <header class="hero" id="home">
+            <div class="brand" data-parallax-container>
+                <a href="#home" class="logo logo-swap glitch magnetic" id="logo" aria-label="MIRROR404" data-parallax-item>
+                    <span class="t t-normal" data-text="MIRROR404">MIRROR404</span>
+                    <span class="t t-alt" data-text="MIRROЯ404">MIRRO<span class="ya">Я</span>40<span class="mirror-4">4</span></span>
+                </a>
+                <p class="tagline" data-parallax-item data-parallax-speed="0.5">Архив Зеркала — смотри на свой страх</p>
+            </div>
+            <a href="#legend" class="enter-btn magnetic" data-nav>Войти в Архив</a>
+        </header>
 
-      <section id="rites" class="section">
-        <h2 class="anim-title">Ритуалы</h2>
-        <ul class="rules">
-          <li class="anim-stagger"><b>Код 13:13</b> — закрой глаза, трижды коснись света правой рукой, шепни своё отражение.</li>
-          <li class="anim-stagger"><b>Зеркальная петля</b> — смотри в зеркало до тех пор, пока оно не перестанет смотреть на тебя.</li>
-          <li class="anim-stagger"><b>Ключ «Глитч»</b> — прикоснись к логотипу, когда экран «дрогнет». Если услышишь тишину — это он.</li>
-        </ul>
-      </section>
+        <main id="content" class="main-content">
+            <nav class="nav" aria-label="Главное меню">
+                <button class="burger" id="burger" aria-expanded="false" aria-controls="navLinks" aria-label="Открыть меню">☰</button>
+                <div id="navLinks" class="nav-links">
+                    <a href="#legend" data-nav class="navlink magnetic">Легенда</a>
+                    <a href="#archive" data-nav class="navlink magnetic">Архив</a>
+                    <a href="#sect" data-nav class="navlink magnetic">Секта</a>
+                    <a href="#test" data-nav class="navlink magnetic">Тест</a>
+                    <a href="#laws" data-nav class="navlink magnetic">Заповеди</a>
+                </div>
+            </nav>
 
-      <section id="consp" class="section">
-        <h2 class="anim-title">Тайный Заговор</h2>
-        <p class="anim-text">Слишком много совпадений, чтобы быть случайностью. 
-          Слишком мало улик, чтобы стать правдой. Этот раздел — карта мест, где шум становится смыслом.</p>
-      </section>
+            <div class="marquee"><p>SYSTEM ALERT: MEMORY CORRUPTION DETECTED... ARCHIVE INTEGRITY AT 73%... DO NOT PROCEED... SYSTEM ALERT...</p></div>
 
-      <section id="ufo" class="section">
-        <h2 class="anim-title">НЛО</h2>
-        <p class="anim-text">Наблюдения, логи, VHS-кадры и рассказы тех, кто «видел свет за облаками». 
-          Архив не убеждает — он показывает.</p>
-      </section>
+            <section id="legend" class="section">
+                <h2 class="anim-title">Легенда Архива</h2>
+                <p class="anim-text distort-on-hover">Куратор — <b>Архивариус НУЛЬ</b>. Лицо без имени, голос без тембра. Он не хранит прошлое — он копирует отражения того, что не произошло, но отбрасывает тень. Любая страница здесь — это зеркало, которое врёт честнее дневника.</p>
+            </section>
 
-      <section id="masons" class="section">
-        <h2 class="anim-title">Масоны</h2>
-        <p class="anim-text">Знаки на камне и в воздухе. Лестницы, которые идут в никуда. 
-          Тайные углы в видимых местах.</p>
-      </section>
+            <section id="archive" class="section">
+                <h2 class="anim-title">Архив</h2>
+                <div id="watchCam" class="watch-cam anim-fade">
+                    <video id="watchVideo" class="watch-video" playsinline muted loop></video>
+                    <div class="watch-overlay">
+                        <span class="watch-label">CAM-04</span>
+                        <button id="watchNext" class="btn btn-ghost btn-small">Сменить канал</button>
+                    </div>
+                </div>
+                <div id="docsGrid" class="docs-grid anim-fade">
+                    <a href="docs/manifest.txt" download class="doc-link">
+                        <div class="doc-icon">TXT</div><div class="doc-title">manifest.txt</div><div class="doc-desc">Протокол <span class="text-redacted">самоуничтожения</span></div>
+                    </a>
+                    <a href="docs/whisper.pdf" download class="doc-link">
+                        <div class="doc-icon">PDF</div><div class="doc-title">whisper.pdf</div><div class="doc-desc">Расшифровка статического шёпота</div>
+                    </a>
+                    <a href="docs/signal.bin" download class="doc-link">
+                        <div class="doc-icon">BIN</div><div class="doc-title">signal.bin</div><div class="doc-desc">Неизвестный бинарный <span class="text-redacted">сигнал</span></div>
+                    </a>
+                </div>
+            </section>
+            
+            <section id="sect" class="section">
+                <h2 class="anim-title">Секта «MIRROR404»</h2>
+                <p class="anim-text">Внутренний круг называет себя «пикселятами». Их обряд — молчаливое листание страниц в три часа ночи. Их знак — <em>зеркальная четвёрка</em>. Их клятва — «я вернусь за собой».</p>
+                <div class="sigil anim-fade" aria-hidden="true"></div>
+            </section>
+            
+            <section id="diary" class="section">
+                <h2 class="anim-title">Дневник Архивариуса НУЛЬ</h2>
+                <div id="diaryList" class="diary-list">
+                    </div>
+            </section>
+            
+            <section id="test" class="section">
+                <h2 class="anim-title">Тест на склонность</h2>
+                <form id="testForm" class="anim-fade test-form" autocomplete="off">
+                    <p>Порог допуска — <b>80/100</b>. Ответы нигде не сохраняются.</p>
+                    <label><input type="checkbox" value="20"> Иногда мне кажется, что экран «смотрит» в ответ.</label>
+                    <label><input type="checkbox" value="20"> Я люблю тишину, в которой слышны шумы.</label>
+                    <label><input type="checkbox" value="20"> У зеркал есть память о том, кто на них не смотрел.</label>
+                    <label><input type="checkbox" value="20"> Симметрия вызывает у меня лёгкое беспокойство.</label>
+                    <label><input type="checkbox" value="20"> Я принимаю «Обет Зеркала».</label>
+                    <div class="test-actions">
+                        <button type="button" id="testSubmit" class="btn btn-danger magnetic">Проверить</button>
+                        <button type="button" id="testOverride" class="btn btn-weird magnetic">Продать душу</button>
+                        <button type="reset" id="testReset" class="btn btn-ghost magnetic">Сбросить</button>
+                    </div>
+                    <div id="testResult" class="test-result" role="status" aria-live="polite"></div>
+                    <p class="admit-counter">Тебе предшествовало <span id="admitCount">...</span> душ.</p>
+                </form>
+            </section>
 
-      <section id="occult" class="section">
-        <h2 class="anim-title">Потустороннее</h2>
-        <p class="anim-text">Там, где кончается порядок, начинается повтор. 
-          Этот раздел хранит истории, которым позволили остаться.</p>
-      </section>
+            <section id="laws" class="section">
+                <h2 class="anim-title">Заповеди Архива</h2>
+                <ol class="rules">
+                    <li class="anim-stagger">Не верь глазам — они принадлежат другим.</li>
+                    <li class="anim-stagger">Молчи, когда слышишь зов.</li>
+                    <li class="anim-stagger">Спи не дольше трёх часов — иначе они найдут тебя.</li>
+                    <li class="anim-stagger">Всё повторяется.</li>
+                    <li class="anim-stagger">Шёпот — истина.</li>
+                    <li class="disclaimer anim-stagger">Всё, что ты прочёл, — отражение твоего страха. Архив — тень искусства, а не реальность.</li>
+                </ol>
+            </section>
+            
+            <section class="section easter-section">
+                <form id="easterForm" class="easter-form anim-fade">
+                    <label for="easterInput" class="easter-label">Введи код доступа:</label>
+                    <div class="easter-controls">
+                        <input type="text" id="easterInput" class="easter-input" autocomplete="off" spellcheck="false">
+                        <button type="submit" id="easterSubmit" class="btn btn-ghost">Ввод</button>
+                    </div>
+                    <div id="easterResult" class="easter-result" role="status"></div>
+                </form>
+            </section>
+            
+            <section id="room-1313" class="section room-secret" aria-hidden="true">
+                <h2 class="anim-title">Комната 13:13</h2>
+                <p>Ты здесь. Стены покрыты симметричными трещинами. В центре — зеркало. Оно показывает не тебя, а код на обратной стороне твоих век. Код: <b>4D 49 52 52 4F 52</b></p>
+            </section>
+            <section id="room-sell" class="section room-secret" aria-hidden="true">
+                <h2 class="anim-title">Комната Сделки</h2>
+                <p>Контракт подписан отражением. Фоновая музыка теперь звучит чуть громче. Она всегда будет с тобой.</p>
+                <audio loop controls muted class="secret-audio" src="audio/secret_loop.mp3" title="Секретный трек"></audio>
+            </section>
+            <section id="room-zero" class="section room-secret" aria-hidden="true">
+                <h2 class="anim-title">Сообщение от НУЛЯ</h2>
+                <p>Я не создавал этот Архив. Я просто первым его нашёл. Или он нашёл меня. Неважно. Главное — не пытайся найти выход. Его нет. Есть только новые входы.</p>
+            </section>
+        </main>
 
-      <section id="cases" class="section">
-        <h2 class="anim-title">Случаи</h2>
-        <p class="anim-text">Краткие досье: исчезновения, «самовозгорания», зеркала без отражений, комнаты, которые не фотографируются.
-          Всё — художественный вымысел, но иногда он похож на жизнь.</p>
-      </section>
+        <footer class="footer">
+            <p>© mirror404.site — Архив Зеркала</p>
+        </footer>
+    </div>
 
-      <section id="diary" class="section">
-        <h2 class="anim-title">Дневник</h2>
-        <p class="anim-text">Фрагменты сна и бодрствования. Дата, шум, отражение, метка. 
-          Читаешь — значит уже внутри.</p>
-      </section>
+    <audio id="audio-ambient" src="audio/ambient.mp3" loop></audio>
+    <audio id="audio-hover" src="audio/hover.mp3"></audio>
+    <audio id="audio-click" src="audio/click.mp3"></audio>
 
-      <!-- ТЕСТ: не медицинский, игровой индекс впечатлительности к теме -->
-      <section id="test" class="section">
-        <h2 class="anim-title">Тест на «зеркальную впечатлительность»</h2>
-        <p class="anim-text">
-          Это не медицинская диагностика и не даёт клинических выводов. 
-          Игровой индекс показывает, насколько тебя цепляют темы отражений, снов и «шума». 
-          Результат никуда не сохраняется и сбрасывается при перезагрузке.
-        </p>
-        <div id="testMount" class="test-form"></div>
-        <div class="test-actions">
-          <button id="testSubmit"   class="btn btn-danger">Показать результат</button>
-          <button id="testReset"    class="btn btn-ghost">Сбросить</button>
-          <button id="testOverride" class="btn btn-weird" title="не рекомендуется">Продать душу</button>
-        </div>
-        <div id="testResult" class="test-result" role="status" aria-live="polite"></div>
-      </section>
-
-      <section id="laws" class="section">
-        <h2 class="anim-title">Заповеди Архива</h2>
-        <ol class="rules">
-          <li class="anim-stagger">Не верь глазам — они принадлежат другим.</li>
-          <li class="anim-stagger">Молчи, когда слышишь зов.</li>
-          <li class="anim-stagger">Спи не дольше трёх часов — иначе они найдут тебя.</li>
-          <li class="anim-stagger">Прикасайся к свету только <b>правой</b> рукой.</li>
-          <li class="anim-stagger">Храни нить — она свяжет твой страх.</li>
-          <li class="anim-stagger">Не называй своё имя после полуночи.</li>
-          <li class="anim-stagger">Не доверяй зеркалам.</li>
-          <li class="anim-stagger">Жертва нужна не для богов, а для людей.</li>
-          <li class="anim-stagger">Всё повторяется.</li>
-          <li class="anim-stagger">Шёпот — истина.</li>
-          <li class="disclaimer anim-stagger">
-            Всё, что ты прочёл, — отражение твоего страха. Архив — тень искусства, а не реальность.
-            Никто не пострадал. Никого не было.
-          </li>
-        </ol>
-      </section>
-    </main>
-
-    <footer class="footer">
-      <p>© mirror404.site — Архив Зеркала</p>
-    </footer>
-  </div>
-
-  <!-- GSAP (для курсора/магнитов/анимаций) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
+    <script src="app.js"></script>
 </body>
 </html>
-
-
-
-
