@@ -4,18 +4,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const M404_CONFIG = {
         BASE_ADMIT_COUNT: 14582,
         ADMIT_COOLDOWN_MS: 30_000,
-        WATCH_LOOPS: ['loops/loop1.mp4', 'loops/loop2.mp4', 'loops/loop3.mp4'],
+        // Media files are empty to prevent 404 errors
+        WATCH_LOOPS: [], 
+        AMBIENT_SOUNDS: { whisper: [], noise: [] },
         DIARY_JSON_URL: './data/diary.json',
         FALLBACK_DIARY: [{ date: "XXXX-XX-XX", title: "ОШИБКА ЗАГРУЗКИ АРХИВА", body: "Файл data/diary.json не найден или повреждён." }],
         EASTER_EGG_CODES: { '13:13': '#room-1313', 'sellSoul': '#room-sell', 'zero': '#room-zero' },
-        AMBIENT_SOUNDS: {
-            whisper: ['audio/whisper1.mp3', 'audio/whisper2.mp3'],
-            noise: ['audio/noise1.mp3', 'audio/noise2.mp3']
-        }
     };
 
-    // MIRROR404: Error handling and Module Definitions
-    const M404_Errors = { log: (e,c='')=>console.error(`M404[${c}]:`,e), wrap: (f,c)=>(...a)=>{try{return f(...a)}catch(e){M404_Errors.log(e,c)}} };
+    // MIRROR404: Error handling utils
+    const M404_Errors = {
+        log: (error, context = '') => console.error(`MIRROR404 Error [${context}]:`, error),
+        wrap: (fn, context) => (...args) => { try { return fn(...args); } catch (e) { M404_Errors.log(e, context); } }
+    };
+    
+    // MIRROR404: Module loader
     const M404_Modules = {
         core: [initAudio, initAgeGate, initIntroVideo],
         ui: [initBurgerMenu, initSmoothNav, initLogoSwap, initGsapAnimations],
@@ -26,64 +29,71 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // MIRROR404: BOOT SEQUENCE
     function boot() {
-        M404_Errors.wrap(() => {
-            const audio = M404_Modules.core[0]();
-            M404_Modules.core[1](audio, () => {
-                M404_Modules.core[2]();
+        console.log("Booting MIRROR404 in Safe Mode (media disabled)...");
+        
+        // Modules that require files are temporarily disabled or run in a safe way
+        
+        // Age Gate is critical and must run first, we pass `null` for audio to prevent errors
+        M404_Errors.wrap(M404_Modules.core[1], 'ageGate')(null, () => {
+            // Intro video is also disabled for now
+            // M404_Errors.wrap(M404_Modules.core[2], 'introVideo')();
+        });
+        
+        // Initialize UI, Content, and Easter modules
+        M404_Modules.ui.forEach(fn => M404_Errors.wrap(fn, fn.name)());
+        M404_Modules.content.forEach(fn => M404_Errors.wrap(fn, fn.name)());
+        M404_Modules.easter.forEach(fn => M404_Errors.wrap(fn, fn.name)());
+
+        // Initialize effects modules for non-touch devices
+        if (!window.matchMedia("(pointer: coarse)").matches) {
+            // Skip ambient sounds for now
+            M404_Modules.effects.forEach(fn => {
+                if (fn.name !== 'initAmbientSounds') { 
+                    M404_Errors.wrap(fn, fn.name)();
+                }
             });
-            Object.keys(M404_Modules).forEach(key => {
-                if (key === 'core') return;
-                M404_Modules[key].forEach(fn => {
-                    if (key === 'effects' && window.matchMedia("(pointer: coarse)").matches) return;
-                    fn();
-                });
-            });
-        }, 'boot')();
+        }
+        console.log("Boot sequence complete in Safe Mode.");
     }
     
-    // --- MODULE IMPLEMENTATIONS (Hardened) ---
+    // --- MODULE IMPLEMENTATIONS (Hardened versions) ---
 
-    function initAudio() {
-        const audio = { ambient: document.getElementById('audio-ambient'), hover: document.getElementById('audio-hover'), click: document.getElementById('audio-click') };
-        if (audio.ambient && audio.ambient.src) audio.ambient.volume = 0.15;
-        const play = (sound) => { if (sound && sound.src && sound.paused) { sound.currentTime = 0; sound.play().catch(() => {}); } };
-        document.addEventListener('mouseover', e => { if (e.target.closest('a, button, .gate-check, input')) play(audio.hover); });
-        document.addEventListener('click', e => { if (e.target.closest('a, button, .gate-check, input')) play(audio.click); });
-        return audio;
-    }
+    // Initializes audio elements, but won't play anything since we don't pass the audio object yet
+    function initAudio() { /* DISABLED IN SAFE MODE */ return null; }
 
     function initAgeGate(audio, onAccessGranted) {
         const dialog = document.getElementById('age-gate'); if (!dialog) return;
-        if (sessionStorage.getItem('mirror404_age_ok') === '1') { onAccessGranted?.(); audio?.ambient?.play().catch(()=>{}); return; }
+        if (sessionStorage.getItem('mirror404_age_ok') === '1') { onAccessGranted?.(); return; }
         dialog.showModal();
+
         const grantAccess = () => {
-            sessionStorage.setItem('mirror404_age_ok', '1'); audio?.ambient?.play().catch(()=>{});
+            sessionStorage.setItem('mirror404_age_ok', '1');
+            audio?.ambient?.play().catch(()=>{}); // This will be silent since audio is null
             dialog.classList.add('fade-out');
             dialog.addEventListener('animationend', () => { dialog.close(); onAccessGranted?.(); }, { once: true });
         };
+
         const enterBtn = document.getElementById('enterGate');
         const chk18 = document.getElementById('chk18');
+        const sellSoulBtn = document.getElementById('sellSoul');
+        const declineBtn = document.getElementById('declineGate');
+
         if(chk18 && enterBtn) chk18.addEventListener('change', (e) => enterBtn.disabled = !e.target.checked);
         if(enterBtn) enterBtn.addEventListener('click', grantAccess);
-        document.getElementById('sellSoul')?.addEventListener('click', grantAccess);
-        document.getElementById('declineGate')?.addEventListener('click', () => window.location.href = 'https://google.com');
+        if(sellSoulBtn) sellSoulBtn.addEventListener('click', grantAccess);
+        if(declineBtn) declineBtn.addEventListener('click', () => window.location.href = 'https://google.com');
     }
 
-    function initIntroVideo() {
-        const intro = document.getElementById('intro'); const video = document.getElementById('introVideo'); const skipBtn = document.getElementById('introSkip');
-        if (!intro || !video || !skipBtn || !video.src.includes('media')) {
-            if (intro) intro.hidden = true;
-            return;
-        }
-        video.addEventListener('canplay', () => { intro.hidden = false; intro.classList.add('visible'); video.play().catch(() => {}); }, { once: true });
-        const hideIntro = () => {
-            intro.classList.remove('visible');
-            intro.addEventListener('transitionend', () => { intro.hidden = true; video.pause(); }, { once: true });
-        };
-        skipBtn.addEventListener('click', hideIntro);
-        video.addEventListener('ended', hideIntro);
+    function initIntroVideo() { /* DISABLED IN SAFE MODE */ }
+
+    function initWatchCam() {
+        const watchCamElement = document.getElementById('watchCam');
+        if (watchCamElement) watchCamElement.style.display = 'none'; // Hide the element if loops are empty
     }
 
+    function initAmbientSounds() { /* DISABLED IN SAFE MODE */ }
+
+    // Other functions (unchanged)
     function initBurgerMenu() {
         const burger = document.getElementById('burger'); const navLinks = document.getElementById('navLinks');
         if(!burger || !navLinks) return;
@@ -115,6 +125,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function initTestForm() {
         const form = document.getElementById('testForm'); if (!form) return;
         const resultDiv = document.getElementById('testResult');
+        const submitBtn = document.getElementById('testSubmit');
+        const overrideBtn = document.getElementById('testOverride');
+        const resetBtn = document.getElementById('testReset');
+
+        if(!resultDiv || !submitBtn || !overrideBtn || !resetBtn) return;
+
         const calculateScore = () => {
             const score = [...form.querySelectorAll('input:checked')].reduce((sum, c) => sum + Number(c.value), 0);
             resultDiv.textContent = score >= 80 ? `Допуск подтверждён (${score}/100).` : `Недостаточно (${score}/100).`;
@@ -124,9 +140,9 @@ document.addEventListener('DOMContentLoaded', () => {
             resultDiv.textContent = 'Сделка заключена.';
             initAdmitCounter.increment?.();
         }
-        document.getElementById('testSubmit')?.addEventListener('click', calculateScore);
-        document.getElementById('testOverride')?.addEventListener('click', sellSoul);
-        document.getElementById('testReset')?.addEventListener('click', () => resultDiv.textContent = '');
+        submitBtn.addEventListener('click', calculateScore);
+        overrideBtn.addEventListener('click', sellSoul);
+        resetBtn.addEventListener('click', () => resultDiv.textContent = '');
     }
 
     function initGsapAnimations() {
@@ -149,23 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('m404_last_admit_ts', String(Date.now()));
             admitCountSpan.textContent = M404_CONFIG.BASE_ADMIT_COUNT + localInc;
         };
-    }
-    
-    function initWatchCam() {
-        const videoEl = document.getElementById('watchVideo'); const nextBtn = document.getElementById('watchNext');
-        if (!videoEl || !nextBtn || M404_CONFIG.WATCH_LOOPS.length === 0) {
-            document.getElementById('watchCam')?.style.setProperty('display', 'none');
-            return;
-        }
-        let currentIndex = Math.floor(Math.random() * M404_CONFIG.WATCH_LOOPS.length);
-        const setVideoSource = (index) => {
-            videoEl.src = M404_CONFIG.WATCH_LOOPS[index]; videoEl.classList.add('video-loading'); videoEl.load();
-            videoEl.play().catch(e => { videoEl.classList.remove('video-loading'); M404_Errors.log(e, 'watchCamPlay'); });
-        };
-        videoEl.addEventListener('loadeddata', () => videoEl.classList.remove('video-loading'));
-        videoEl.addEventListener('error', () => { videoEl.classList.remove('video-loading'); M404_Errors.log('Failed to load video', M404_CONFIG.WATCH_LOOPS[currentIndex]); });
-        nextBtn.addEventListener('click', () => { currentIndex = (currentIndex + 1) % M404_CONFIG.WATCH_LOOPS.length; setVideoSource(currentIndex); });
-        setVideoSource(currentIndex);
     }
     
     function initDiary() {
@@ -210,24 +209,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function initAmbientSounds() {
-        if(!M404_CONFIG.AMBIENT_SOUNDS) return;
-        let lastPlayed = 0; const minDelay = 120000;
-        function playRandomSound() {
-            if (Date.now() - lastPlayed < minDelay) { setTimeout(playRandomSound, minDelay); return; }
-            const soundType = Math.random() > 0.7 ? 'noise' : 'whisper';
-            const soundFiles = M404_CONFIG.AMBIENT_SOUNDS[soundType];
-            if (!soundFiles || soundFiles.length === 0) return;
-            const soundFile = soundFiles[Math.floor(Math.random() * soundFiles.length)];
-            const audio = new Audio(soundFile);
-            audio.volume = soundType === 'whisper' ? 0.2 : 0.1;
-            audio.play().catch(() => {});
-            lastPlayed = Date.now();
-            setTimeout(playRandomSound, minDelay + Math.random() * 120000);
-        }
-        window.addEventListener('load', () => setTimeout(playRandomSound, 30000));
-    }
-    
     function initCustomCursor() {
         const cursor = document.querySelector('.cursor'); if (!cursor) return;
         window.addEventListener('mousemove', e => gsap.to(cursor, { duration: 0.3, x: e.clientX, y: e.clientY }));
