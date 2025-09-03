@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ADMIT_COOLDOWN_MS: 30_000,
         WATCH_LOOPS: ['loops/loop1.mp4', 'loops/loop2.mp4', 'loops/loop3.mp4'],
         DIARY_JSON_URL: './data/diary.json',
-        FALLBACK_DIARY: [{ date: "XXXX-XX-XX", title: "ОШИБКА ЗАГРУЗКИ АРХИВА", body: "Файл data/diary.json не найден. Архив повреждён или отсутствует." }],
+        FALLBACK_DIARY: [{ date: "XXXX-XX-XX", title: "ОШИБКА ЗАГРУЗКИ АРХИВА", body: "Файл data/diary.json не найден или повреждён." }],
         EASTER_EGG_CODES: { '13:13': '#room-1313', 'sellSoul': '#room-sell', 'zero': '#room-zero' },
         AMBIENT_SOUNDS: {
             whisper: ['audio/whisper1.mp3', 'audio/whisper2.mp3'],
@@ -24,46 +24,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const M404_Modules = {
         core: [initAudio, initAgeGate, initIntroVideo],
         ui: [initBurgerMenu, initSmoothNav, initLogoSwap, initGsapAnimations],
-        content: [initWatchCam, initDiary, initTestForm, initAdmitCounter],
+        content: [initWatchCam, initDiary, initTestForm],
         effects: [initCustomCursor, initMouseEffects, initTextDistortion, initAmbientSounds],
-        easter: [initEasterEggs]
+        easter: [initEasterEggs, initAdmitCounter]
     };
 
     // MIRROR404: BOOT SEQUENCE
     function boot() {
-        const audio = M404_Errors.wrap(M404_Modules.core[0], 'module:core:audio')();
-        M404_Errors.wrap(M404_Modules.core[1], 'module:core:ageGate')(audio); // Pass audio controls to AgeGate
-        M404_Errors.wrap(M404_Modules.core[2], 'module:core:introVideo')();
-        
-        // Initialize other modules after core logic
-        Object.entries(M404_Modules).forEach(([key, modules]) => {
-            if (key === 'core') return;
-            modules.forEach(fn => M404_Errors.wrap(fn, `module:${key}`)());
+        const audio = M404_Errors.wrap(M404_Modules.core[0], 'audio')();
+        M404_Errors.wrap(M404_Modules.core[1], 'ageGate')(audio, () => {
+             M404_Errors.wrap(M404_Modules.core[2], 'introVideo')();
         });
+        
+        M404_Modules.ui.forEach(fn => M404_Errors.wrap(fn, fn.name)());
+        M404_Modules.content.forEach(fn => M404_Errors.wrap(fn, fn.name)());
+        M404_Modules.easter.forEach(fn => M404_Errors.wrap(fn, fn.name)());
+
+        if (!window.matchMedia("(pointer: coarse)").matches) {
+            M404_Modules.effects.forEach(fn => M404_Errors.wrap(fn, fn.name)());
+        }
     }
-
-    // --- MODULES ---
-
-    function initAudio() { /* ... */ } // Placeholder, code is below
-    function initAgeGate(audio) { /* ... */ } // Needs audio
-    function initIntroVideo() { /* ... */ }
-    function initBurgerMenu() { /* ... */ }
-    function initSmoothNav() { /* ... */ }
-    function initLogoSwap() { /* ... */ }
-    function initTestForm() { /* ... */ }
-    function initGsapAnimations() { /* ... */ }
-    function initAdmitCounter() { /* ... */ }
-    function initWatchCam() { /* ... */ }
-    function initDiary() { /* ... */ }
-    function initEasterEggs() { /* ... */ }
-    function initCustomCursor() { /* ... */ }
-    function initMouseEffects() { /* ... */ }
-    function initTextDistortion() { /* ... */ }
-    function initAmbientSounds() { /* ... */ }
     
-    // --- IMPLEMENTATIONS ---
-
-    initAudio = function() {
+    function initAudio() {
         const audio = { ambient: document.getElementById('audio-ambient'), hover: document.getElementById('audio-hover'), click: document.getElementById('audio-click') };
         if (audio.ambient) audio.ambient.volume = 0.15;
         const play = (sound) => { if (sound && sound.paused) { sound.currentTime = 0; sound.play().catch(() => {}); } };
@@ -72,14 +54,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return audio;
     }
 
-    initAgeGate = function(audio) {
+    function initAgeGate(audio, onAccessGranted) {
         const dialog = document.getElementById('age-gate'); if (!dialog) return;
-        if (sessionStorage.getItem('mirror404_age_ok') === '1') { audio?.ambient?.play(); return; }
+        if (sessionStorage.getItem('mirror404_age_ok') === '1') { onAccessGranted(); audio?.ambient?.play(); return; }
         dialog.showModal();
         const grantAccess = () => {
             sessionStorage.setItem('mirror404_age_ok', '1'); audio?.ambient?.play();
             dialog.classList.add('fade-out');
-            dialog.addEventListener('animationend', () => dialog.close(), { once: true });
+            dialog.addEventListener('animationend', () => { dialog.close(); onAccessGranted(); }, { once: true });
         };
         const enterBtn = document.getElementById('enterGate');
         document.getElementById('chk18').addEventListener('change', (e) => enterBtn.disabled = !e.target.checked);
@@ -88,32 +70,76 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('declineGate').addEventListener('click', () => window.location.href = 'https://google.com');
     }
 
-    initIntroVideo = function() { /* Unchanged */ }
-
-    initBurgerMenu = function() { /* Unchanged */ }
-
-    initSmoothNav = function() { /* Unchanged */ }
-
-    initLogoSwap = function() { /* Unchanged */ }
-    
-    initTestForm = function() {
-        const form = document.getElementById('testForm'); if (!form) return;
-        const resultDiv = document.getElementById('testResult');
-        document.getElementById('testSubmit').addEventListener('click', () => {
-            const score = [...form.querySelectorAll('input:checked')].reduce((sum, c) => sum + Number(c.value), 0);
-            resultDiv.textContent = score >= 80 ? `Допуск подтверждён (${score}/100).` : `Недостаточно (${score}/100).`;
-            if (score >= 80) M404_Modules.easter.find(f => f.name === 'initAdmitCounter').increment();
-        });
-        document.getElementById('testOverride').addEventListener('click', () => {
-            resultDiv.textContent = 'Сделка заключена.';
-            M404_Modules.easter.find(f => f.name === 'initAdmitCounter').increment();
-        });
-        document.getElementById('testReset').addEventListener('click', () => resultDiv.textContent = '');
+    function initIntroVideo() {
+        const intro = document.getElementById('intro'); const video = document.getElementById('introVideo'); const skipBtn = document.getElementById('introSkip');
+        if (!intro || !video || !video.src.includes('media')) return; // Check if src is valid
+        video.addEventListener('canplay', () => { intro.hidden = false; intro.classList.add('visible'); video.play().catch(() => {}); }, { once: true });
+        const hideIntro = () => {
+            intro.classList.remove('visible');
+            intro.addEventListener('transitionend', () => { intro.hidden = true; video.pause(); }, { once: true });
+        };
+        skipBtn.addEventListener('click', hideIntro);
+        video.addEventListener('ended', hideIntro);
     }
 
-    initGsapAnimations = function() { /* Unchanged */ }
+    function initBurgerMenu() {
+        const burger = document.getElementById('burger'); const navLinks = document.getElementById('navLinks');
+        burger?.addEventListener('click', () => { const isOpen = navLinks.classList.toggle('open'); burger.setAttribute('aria-expanded', String(isOpen)); });
+    }
 
-    initAdmitCounter = function() {
+    function initSmoothNav() {
+        const veil = document.getElementById('veil');
+        document.querySelectorAll('[data-nav]').forEach(anchor => {
+            anchor.addEventListener('click', e => {
+                const targetId = anchor.getAttribute('href'); const targetEl = document.querySelector(targetId);
+                if (!targetId?.startsWith('#') || !targetEl) return;
+                e.preventDefault(); veil?.classList.add('on');
+                setTimeout(() => {
+                    targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    setTimeout(() => veil?.classList.remove('on'), 450);
+                }, 200);
+                document.getElementById('navLinks')?.classList.remove('open');
+                document.getElementById('burger')?.setAttribute('aria-expanded', 'false');
+            });
+        });
+    }
+
+    function initLogoSwap() {
+        const logo = document.getElementById('logo');
+        if (logo) setInterval(() => { logo.classList.add('is-alt'); setTimeout(() => logo.classList.remove('is-alt'), 500); }, 12000);
+    }
+    
+    function initTestForm() {
+        const form = document.getElementById('testForm'); if (!form) return;
+        const resultDiv = document.getElementById('testResult');
+        const submitBtn = document.getElementById('testSubmit');
+        const overrideBtn = document.getElementById('testOverride');
+        const resetBtn = document.getElementById('testReset');
+
+        const calculateScore = () => {
+            const score = [...form.querySelectorAll('input:checked')].reduce((sum, c) => sum + Number(c.value), 0);
+            resultDiv.textContent = score >= 80 ? `Допуск подтверждён (${score}/100).` : `Недостаточно (${score}/100).`;
+            if (score >= 80) initAdmitCounter.increment();
+        };
+        
+        const sellSoul = () => {
+            resultDiv.textContent = 'Сделка заключена.';
+            initAdmitCounter.increment();
+        }
+
+        submitBtn.addEventListener('click', calculateScore);
+        overrideBtn.addEventListener('click', sellSoul);
+        resetBtn.addEventListener('click', () => resultDiv.textContent = '');
+    }
+
+    function initGsapAnimations() {
+        gsap.registerPlugin(ScrollTrigger);
+        document.querySelectorAll(".anim-title").forEach(title => gsap.from(title, { scrollTrigger: { trigger: title, start: "top 85%" }, duration: 1.2, opacity: 0, y: 20, ease: "power3.out" }));
+        gsap.utils.toArray('.anim-text, .anim-fade').forEach(el => gsap.from(el, { scrollTrigger: { trigger: el, start: "top 90%" }, opacity: 0, y: 20, duration: 1 }));
+        gsap.utils.toArray('.rules').forEach(list => gsap.from(list.querySelectorAll('.anim-stagger'), { scrollTrigger: { trigger: list, start: "top 85%" }, opacity: 0, y: 15, duration: 0.5, stagger: 0.1 }));
+    }
+
+    function initAdmitCounter() {
         const admitCountSpan = document.getElementById('admitCount');
         let localInc = parseInt(localStorage.getItem('m404_admit_local_inc') || '0', 10);
         admitCountSpan.textContent = M404_CONFIG.BASE_ADMIT_COUNT + localInc;
@@ -128,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
     
-    initWatchCam = function() {
+    function initWatchCam() {
         const videoEl = document.getElementById('watchVideo'); const nextBtn = document.getElementById('watchNext');
         if (!videoEl || !nextBtn) return;
         let currentIndex = Math.floor(Math.random() * M404_CONFIG.WATCH_LOOPS.length);
@@ -144,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setVideoSource(currentIndex);
     }
     
-    initDiary = function() {
+    function initDiary() {
         const listEl = document.getElementById('diaryList'); if (!listEl) return;
         listEl.innerHTML = `<div class="diary-loading" aria-live="polite">Загрузка дневника...</div>`;
         listEl.setAttribute('aria-busy', 'true');
@@ -164,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => { renderEntries(M404_CONFIG.FALLBACK_DIARY); M404_Errors.log(error, 'diaryFetch'); });
     }
     
-    initEasterEggs = function() {
+    function initEasterEggs() {
         const form = document.getElementById('easterForm'); const input = document.getElementById('easterInput'); const resultEl = document.getElementById('easterResult');
         if (!form || !input) return;
         const codeHistory = []; const maxHistory = 5; let historyIndex = -1;
@@ -193,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    initAmbientSounds = function() {
+    function initAmbientSounds() {
         let lastPlayed = 0; const minDelay = 120000;
         function playRandomSound() {
             if (Date.now() - lastPlayed < minDelay) { setTimeout(playRandomSound, minDelay); return; }
@@ -209,10 +235,59 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         window.addEventListener('load', () => setTimeout(playRandomSound, 30000));
     }
-    
-    // (Код для initCustomCursor, initMouseEffects, initTextDistortion, etc. без изменений)
-    
+
+    function initCustomCursor() {
+        const cursor = document.querySelector('.cursor'); if (!cursor) return;
+        window.addEventListener('mousemove', e => gsap.to(cursor, { duration: 0.3, x: e.clientX, y: e.clientY }));
+        document.addEventListener('mouseover', e => cursor.classList.toggle('hover', e.target.closest('a, button, .gate-check, input')));
+    }
+
+    function initMouseEffects() {
+        const parallaxContainer = document.querySelector('[data-parallax-container]');
+        if (parallaxContainer) {
+            parallaxContainer.addEventListener('mousemove', e => {
+                const { clientX, clientY, currentTarget } = e;
+                const { offsetWidth, offsetHeight } = currentTarget;
+                const x = (clientX / offsetWidth - 0.5) * 30; const y = (clientY / offsetHeight - 0.5) * 30;
+                gsap.utils.toArray('[data-parallax-item]').forEach(item => {
+                    const speed = item.dataset.parallaxSpeed || 1;
+                    gsap.to(item, { duration: 1, x: -x * speed, y: -y * speed, ease: "power2.out" });
+                });
+            });
+        }
+        gsap.utils.toArray('.magnetic').forEach(el => {
+            el.addEventListener('mousemove', e => {
+                const { clientX, clientY } = e; const { left, top, width, height } = el.getBoundingClientRect();
+                gsap.to(el, { duration: 0.5, x: (clientX - (left + width / 2)) * 0.4, y: (clientY - (top + height / 2)) * 0.4, ease: "power2.out" });
+            });
+            el.addEventListener('mouseleave', () => gsap.to(el, { duration: 0.7, x: 0, y: 0, ease: "elastic.out(1, 0.4)" }));
+        });
+        const logo = document.getElementById('logo');
+        if (logo) {
+            logo.addEventListener('mouseenter', () => {
+                if (logo.anim) logo.anim.kill();
+                logo.anim = gsap.timeline({ repeat: -1, repeatRefresh: true }).to(logo, { duration: 0.05, '--x': () => gsap.utils.random(-5, 5, 1) + 'px', '--y': () => gsap.utils.random(-3, 3, 1) + 'px', '--r': () => gsap.utils.random(-2, 2) + 'deg' });
+                logo.style.transform = 'translate(var(--x, 0), var(--y, 0)) rotate(var(--r, 0))';
+            });
+            logo.addEventListener('mouseleave', () => { if (logo.anim) logo.anim.kill(); gsap.to(logo, { duration: 0.5, x: 0, y: 0, rotation: 0, ease: 'elastic.out(1, 0.4)'}); });
+        }
+    }
+
+    function initTextDistortion() {
+        document.querySelectorAll(".distort-on-hover").forEach(element => {
+            const originalText = element.innerText; const letters = "▓▒░█".split(''); let interval = null;
+            element.addEventListener("mouseenter", () => {
+                let iteration = 0; clearInterval(interval);
+                interval = setInterval(() => {
+                    element.innerText = originalText.split("").map((_, index) => index < iteration ? originalText[index] : letters[Math.floor(Math.random() * letters.length)]).join("");
+                    if (iteration >= originalText.length) clearInterval(interval);
+                    iteration += 1 / 3;
+                }, 30);
+            });
+            element.addEventListener("mouseleave", () => { clearInterval(interval); element.innerText = originalText; });
+        });
+    }
+
     // ===== GO! =====
     boot();
 });
-
